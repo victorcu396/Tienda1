@@ -340,8 +340,8 @@ public class Tienda2025 {
             System.out.println("\t\t2. Eliminar Artículo");
             System.out.println("\t\t3. Listar Artículos");
             System.out.println("\t\t4. Ordenar Artículos con Streams");
-            System.out.println("\t\t5. Listar Artticulos segun la Seccion (desde archivos)");
-            System.out.println("\t\t6. Crear un archivo por Seccion");
+            System.out.println("\t\t5. Crear un archivo por Seccion");
+            System.out.println("\t\t6. Listar Artticulos segun la Seccion (desde archivos)");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -364,11 +364,11 @@ public class Tienda2025 {
                     break;
                 }
                  case 5:{
-                    listadoSeccion();
+                    backupPorSeccion();
                     break;
                 }
                 case 6:{
-                    guardarSecciones();
+                    leerArchivosSeccion();
                     break;
                 }
                 case 0:{
@@ -463,78 +463,97 @@ public class Tienda2025 {
     }
 
      
-    private void listadoSeccion() {
-        ArrayList<Articulo> secciones = new ArrayList();
-        System.out.println("Dime la seccion");
-        String seccion=sc.nextLine();
+    public void leerArchivosSeccion() {
+        System.out.println("Teclea la Seccion de los articulos que quieres recuperar:");        
+        String id=sc.next();
+        ArrayList<Articulo> articulosAux= new ArrayList();
+        Articulo a;
         
-        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream ("articulos.dat"))){
-            //LEER TODO OBJETO A OBJETO
-            Articulo a;
-            
-            while ( (a=(Articulo)oisArticulos.readObject()) !=null) {
-                if (a.getIdArticulo().startsWith(seccion)) {
-                    secciones.add(a);
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("articulos.dat"))){
+            while ( (a=(Articulo)oisArticulos.readObject()) != null){
+                if (id.equals("5")){
+                    articulosAux.add(a);
+                }else if (a.getIdArticulo().startsWith(id)){
+                    articulosAux.add(a);
                 }
-            }  
-
+            } 
         } catch (FileNotFoundException e) {
-            System.out.println(e.toString());
+                 System.out.println(e.toString());    
         } catch (EOFException e){
-
-        } catch (ClassNotFoundException | IOException e){
-            System.out.println(e.toString());
-        }
-    secciones.forEach(System.out::println);
-    
-    }
-
-    private void guardarSecciones(){
-        
-        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream ("perifericos.dat"));
-                ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream ("almacenamiento.dat"));
-                ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream ("impresoras.dat"));
-                ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream ("monitores.dat")))  {
             
-        for (Articulo a : articulos.values()) {
-            char seccion =a.getIdArticulo().charAt(0);
-             
-            switch (seccion) { 
-                case '1':{
-                    oosPerifericos.writeObject(a);
-                    break;
-                }
-                case '2':{
-                   oosAlmacenamiento.writeObject(a);
-                    break;
-                }
-                case '3':{
-                    oosImpresoras.writeObject(a);
-                    break;
-                }
-                case '4':{
-                    oosMonitores.writeObject(a);
-                    break;
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        } 
+        
+        articulosAux.forEach(System.out::println);
+    }
+    
+    public void backupPorSeccion() {
+        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("Perifericos.dat"));
+            ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("Almacenamiento.dat"));
+            ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("Impresoras.dat"));
+            ObjectOutputStream oosMonitores = new ObjectOutputStream (new FileOutputStream("Monitores.dat"))) {
+	   	   
+            for (Articulo a : articulos.values()) {
+                char seccion=a.getIdArticulo().charAt(0);
+                switch (seccion) {
+                    case '1':
+                        oosPerifericos.writeObject(a);
+                        break;
+                    case '2':
+                        oosAlmacenamiento .writeObject(a);
+                        break;
+                    case '3':
+                        oosImpresoras.writeObject(a);
+                        break;
+                    case '4':
+                        oosMonitores.writeObject(a);
+                        break;
                 }
             }
-         
+            System.out.println("Copia de seguridad realizada con éxito.");
+	    
+        } catch (FileNotFoundException e) {
+                 System.out.println(e.toString());                                                          
+        } catch (IOException e) {
+                 System.out.println(e.toString());
+        } 
+        /* PARA COMPROBAR QUE FUNCIONA, VERIFICAMOS QUE SE HAN CREADO LOS 4 ARCHIVOS EN LA CARPETA
+        RAÍZ DEL PROYECTO CON LA FECHA Y HORA ACTUAL - 
+        ... Y PARA COMPROBAR EL CONTENIDO DE LOS ARCHIVOS LEEREMOS/IMPRIMIREMOS "AL VUELO" SÓLO 1 DE ELLOS
+         CUYA SECCION SOLICITAMOS POR TECLADO
+        */
+                
+        System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");        
+        char seccion=sc.next().charAt(0);
+        String nombreArchivo=null;
+        switch (seccion) {
+                    case '1':
+                        nombreArchivo="Perifericos.dat";
+                        break;
+                    case '2':
+                        nombreArchivo="Almacenamiento.dat";
+                        break;
+                    case '3':
+                        nombreArchivo="Impresoras.dat";
+                        break;
+                    case '4':
+                        nombreArchivo="Monitores.dat";
+                        break;
         }
-     /**   
-        for (Articulo p : articulos.values()) {
-            if (p.getIdArticulo().startsWith("1")) {
-                oosPerifericos.writeObject(p);
-            }
-        }
-*/
-        System.out.println("Copia de Seguridad realizada con exito :D");
-        
-    } catch (FileNotFoundException e) {
-        System.out.println(e.toString());
-    } catch (IOException e){
-        System.out.println(e.toString());
-    }
-        
-    }
+        Articulo a;
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream(nombreArchivo))){
+            while ( (a=(Articulo)oisArticulos.readObject()) != null){
+                System.out.println(a);
+            } 
+        } catch (FileNotFoundException e) {
+                 System.out.println(e.toString());    
+        } catch (EOFException e){
+            
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        } 
+    }  
     
 //</editor-fold>
  
