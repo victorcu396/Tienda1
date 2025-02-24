@@ -4,11 +4,14 @@
 
 package dawvictormm.tienda2025;
 
+import java.io.BufferedWriter;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.LocalDate;
@@ -92,8 +95,8 @@ public class Tienda2025 {
  }
     */
 //</editor-fold>     
-     
- 
+  
+    
  
  //<editor-fold defaultstate="collapsed" desc="MENÚ  PRINCIPAL">
      private void mostrarMenuPrincipal() {
@@ -312,8 +315,7 @@ public class Tienda2025 {
         
     }
      
-    public double totalPedido(Pedido p)
-    {
+    public double totalPedido(Pedido p) {
         double total=0;
         for (LineaPedido l:p.getCestaCompra())
         {
@@ -338,6 +340,8 @@ public class Tienda2025 {
             System.out.println("\t\t2. Eliminar Artículo");
             System.out.println("\t\t3. Listar Artículos");
             System.out.println("\t\t4. Ordenar Artículos con Streams");
+            System.out.println("\t\t5. Listar Artticulos segun la Seccion (desde archivos)");
+            System.out.println("\t\t6. Crear un archivo por Seccion");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -357,6 +361,14 @@ public class Tienda2025 {
                 }
                  case 4:{
                     OrdenarArticulos();
+                    break;
+                }
+                 case 5:{
+                    listadoSeccion();
+                    break;
+                }
+                case 6:{
+                    guardarSecciones();
                     break;
                 }
                 case 0:{
@@ -450,6 +462,79 @@ public class Tienda2025 {
         
     }
 
+     
+    private void listadoSeccion() {
+        ArrayList<Articulo> secciones = new ArrayList();
+        System.out.println("Dime la seccion");
+        String seccion=sc.nextLine();
+        
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream ("articulos.dat"))){
+            //LEER TODO OBJETO A OBJETO
+            Articulo a;
+            
+            while ( (a=(Articulo)oisArticulos.readObject()) !=null) {
+                if (a.getIdArticulo().startsWith(seccion)) {
+                    secciones.add(a);
+                }
+            }  
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e){
+
+        } catch (ClassNotFoundException | IOException e){
+            System.out.println(e.toString());
+        }
+    secciones.forEach(System.out::println);
+    
+    }
+
+    private void guardarSecciones(){
+        
+        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream ("perifericos.dat"));
+                ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream ("almacenamiento.dat"));
+                ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream ("impresoras.dat"));
+                ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream ("monitores.dat")))  {
+            
+        for (Articulo a : articulos.values()) {
+            char seccion =a.getIdArticulo().charAt(0);
+             
+            switch (seccion) { 
+                case '1':{
+                    oosPerifericos.writeObject(a);
+                    break;
+                }
+                case '2':{
+                   oosAlmacenamiento.writeObject(a);
+                    break;
+                }
+                case '3':{
+                    oosImpresoras.writeObject(a);
+                    break;
+                }
+                case '4':{
+                    oosMonitores.writeObject(a);
+                    break;
+                }
+            }
+         
+        }
+     /**   
+        for (Articulo p : articulos.values()) {
+            if (p.getIdArticulo().startsWith("1")) {
+                oosPerifericos.writeObject(p);
+            }
+        }
+*/
+        System.out.println("Copia de Seguridad realizada con exito :D");
+        
+    } catch (FileNotFoundException e) {
+        System.out.println(e.toString());
+    } catch (IOException e){
+        System.out.println(e.toString());
+    }
+        
+    }
     
 //</editor-fold>
  
@@ -462,6 +547,8 @@ public class Tienda2025 {
             System.out.println("\t\t1. Crear Cliente");
             System.out.println("\t\t2. Eliminar Clientes");
             System.out.println("\t\t3. Listar Clientes");
+            System.out.println("\t\t4. Copia de Seguridad en Texto");
+            System.out.println("\t\t5. Leer Archivo de Texto");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -477,6 +564,15 @@ public class Tienda2025 {
                 }
                 case 3:{
                     listarClientes();
+                    break;
+                }
+                
+                case 4:{
+                    clientesTxtBackup();
+                    break;
+                }
+                case 5:{
+                    clientesTxtLeer();
                     break;
                 }
                 case 0:{
@@ -529,6 +625,7 @@ public class Tienda2025 {
          System.out.println("HOLA");
     }
     
+     
     private void listarClientes() {
          
         ArrayList<Cliente> clientesAux = new ArrayList(clientes.values());
@@ -547,7 +644,33 @@ public class Tienda2025 {
             System.out.println(c);
         }
     }
-
+   
+  public void clientesTxtBackup() {
+        try(BufferedWriter bfwClientes=new BufferedWriter(new FileWriter("clientes.csv"))){
+            for (Cliente c : clientes.values()) {
+                bfwClientes.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+            }
+        }catch (FileNotFoundException e) {
+                 System.out.println(e.toString());   
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+    }  
+    
+    public void clientesTxtLeer() {
+        // LEEMOS LOS CLIENTES DESDE EL ARCHIVO .csv A UNA COLECCION HASHMAP AUXILIAR Y LA IMPRIMIMOS
+        HashMap <String,Cliente> clientesAux = new HashMap();
+        try(Scanner scClientes=new Scanner(new File("clientes.csv"))){
+            while (scClientes.hasNextLine()){
+                String [] atributos = scClientes.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesAux.put(atributos[0], c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        clientesAux.values().forEach(System.out::println);
+    }  
     
 //</editor-fold>
 
@@ -558,6 +681,7 @@ public class Tienda2025 {
          ObjectOutputStream oosPedidos = new ObjectOutputStream(new FileOutputStream ("pedidos.dat")))  {
             
         //GUARDANDOLO TODO OBJETO POR OBJETO
+        
         for (Articulo a : articulos.values()) {
             oosArticulos.writeObject(a);
         }
@@ -568,7 +692,7 @@ public class Tienda2025 {
             oosPedidos.writeObject(p);
         }
         
-        /**
+        /**SE GUARDA EL HASMAP ENTERO Y NO EL OBJETO EN SÍ
         // COLECCIONES COMPLETAS
         oosArticulos.writeObject(articulos);
         oosClientes.writeObject(clientes);
@@ -589,6 +713,7 @@ public class Tienda2025 {
 }
     
     /**
+     *      //SE IMPORTAN TODO LOS OBJETOS DEL HASMAP DEL TIRON
             articulos= (HashMap <String,Articulo>) oisArticulos.readObject();
             clientes= (HashMap <String,Cliente>) oisClientes.readObject();
             
@@ -599,6 +724,7 @@ public class Tienda2025 {
             }
             */
     public void leerArchivos(){
+        
         //LEER ARTICULOS
         try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream ("articulos.dat"))){
             //LEER TODO OBJETO A OBJETO
@@ -614,6 +740,7 @@ public class Tienda2025 {
     } catch (ClassNotFoundException | IOException e){
         System.out.println(e.toString());
     }
+        
         //LEER CLIENTES
         try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream ("clientes.dat"))){
             //LEER TODO OBJETO A OBJETO
@@ -629,6 +756,7 @@ public class Tienda2025 {
     } catch (ClassNotFoundException | IOException e){
         System.out.println(e.toString());
     }
+        
         //LEER PEDIDOS
         try (ObjectInputStream oisPedidos = new ObjectInputStream(new FileInputStream ("pedidos.dat"))){
             //LEER TODO OBJETO A OBJETO
