@@ -5,6 +5,7 @@
 package dawvictormm.tienda2025;
 
         //<editor-fold defaultstate="collapsed" desc="IMPORTS">
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -652,6 +655,14 @@ public class Tienda2025 {
                     clientesTxtLeer();
                     break;
                 }
+                case 6:{
+                    informacionArchivo();
+                    break;
+                }
+                case 7:{
+                    restaurarPedidosDeCliente();
+                    break;
+                }        
                 case 0:{
                     System.out.println("\t\tVolviendo al menú principal...");
                     break;
@@ -731,7 +742,7 @@ public class Tienda2025 {
     }
    
     public void clientesTxtBackup() {
-        try(BufferedWriter bfwClientes=new BufferedWriter(new FileWriter("clientes.csv"))){
+        try(BufferedWriter bfwClientes=new BufferedWriter(new FileWriter("clientes.txt"))){
             for (Cliente c : clientes.values()) {
                 bfwClientes.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
             }
@@ -745,7 +756,7 @@ public class Tienda2025 {
     public void clientesTxtLeer() {
         // LEEMOS LOS CLIENTES DESDE EL ARCHIVO .csv A UNA COLECCION HASHMAP AUXILIAR Y LA IMPRIMIMOS
         HashMap <String,Cliente> clientesAux = new HashMap();
-        try(Scanner scClientes=new Scanner(new File("clientes.csv"))){
+        try(Scanner scClientes=new Scanner(new File("clientes.txt"))){
             while (scClientes.hasNextLine()){
                 String [] atributos = scClientes.nextLine().split("[,]");                                                              
                 Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
@@ -865,6 +876,254 @@ public class Tienda2025 {
    
     
 //<editor-fold defaultstate="collapsed" desc="METODOS EXTRAS">
+    
+    public void eliminarArchivo() {  
+
+	Scanner sc = new Scanner(System.in);  
+
+	System.out.println("Indica el nombre del archivo a borrar: ");  
+
+	String nombre = sc.nextLine();  
+
+        File f = new File(nombre); 	 
+
+        System.out.println(f.getAbsolutePath());  
+
+	if(f.delete()){  
+
+		System.out.println("El archivo ha sido eliminado");  
+
+	} else{  
+
+		System.out.println("No se ha podido eliminar :(");  
+
+	} 
+
+    } 
+    public void cambioNombre() { 
+
+        Scanner sc = new Scanner(System.in); 
+
+	System.out.println("Indica el nombre del archivo a renombrar: "); 
+
+        String nombre = sc.nextLine();  
+
+        File f1 = new File(nombre);  
+
+	System.out.println("Indica el nuevo nombre del archivo ");  
+
+	String nombre2 = sc.nextLine();  
+
+	File f2 = new File(nombre2);  
+
+	if(f1.renameTo(f2)){  
+
+		System.out.println("El nombre del archivo se ha cambiado con éxito =)");  
+
+	} else{  
+
+		System.out.println("No se ha podido cambiar el nombre del archivo :(");  
+
+	}  
+
+    } 
+    public void listadoContenido() { 
+
+        Scanner sc = new Scanner(System.in);  
+
+        File carpeta;  
+
+        System.out.println("Nombre de la carpeta a LISTAR -(ENTER) para mostrar contenido de la carpeta ACTUAL: ");  
+
+        String nombre = sc.nextLine();  
+
+        if (nombre==""){  
+
+                carpeta= new File("."); 
+
+        }else{  
+
+            carpeta= new File(nombre); 
+
+        }  
+
+        String[] listado = carpeta.list();  
+
+        for (String s: listado) {  
+
+            System.out.println(s);  
+
+        }  
+
+    } 
+    public void informacionArchivo() { 
+
+        File f= new File("clientes.dat");  //cualquier archivo
+
+        try {  
+            f.createNewFile();  
+
+        } catch (IOException e) {  
+
+            System.out.println(e.getMessage());  
+
+        } System.out.println("Nombre: " + f.getName());  
+
+        System.out.println("Ruta: " + f.getAbsolutePath() );  
+
+        System.out.println("Tamaño en Bytes: " + f.length() );  
+
+        System.out.println("Fecha Última modificación: " + new Date (f.lastModified()));  
+
+    } 
+    
+   //ESCRITURA en un archivo de texto(añadiendo líneas a las ya existentes) 
+   public void escritura(){
+  
+    Scanner sc=new Scanner(System.in); 
+   
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("fichero.txt", true))) { 
+    
+        String cadena;
+        System.out.println("Teclea líneas de texto + RETORNO - (FIN para terminar)");
+        cadena = sc.nextLine();
+        while (!cadena.equalsIgnoreCase("FIN")) {
+            bw.write(cadena); //escribe la cadena en el BufferedWriter 
+            bw.newLine(); //añade un salto de línea 
+            cadena = sc.nextLine();  } //Solicita una nueva cadena
+    } catch (IOException e) { 
+        System.out.println("No se ha podido escribir en el fichero"); 
+      }  
+  }
+   ////LECTURA línea a línea desde un archivo de texto (Se imprime en pantalla)
+   public void lecturaLineaPorLinea(){
+ 
+    try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) { 
+        String cadena = br.readLine();  // lee la primera línea del fichero 
+        while (cadena != null) {    // mientras no se llegue al final del archivo 
+            System.out.println(cadena);     // se nuestra por pantalla 
+            cadena = br.readLine();     // se lee la siguiente línea del archivo 
+        }
+    }catch (FileNotFoundException e) { 
+    System.out.println(e.getMessage()); 
+    }catch (IOException e) { 
+    System.out.println(e.getMessage()); }  
+}
+   //LECTURA carácter a carácter desde un archivo de texto (Se imprime en pantalla)
+   public void lecturaCaracterPorCaracter(){
+       
+        try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) { 
+            int caracter = br.read();   //se lee el primer carácter del fichero 
+        while (caracter != -1) {    //mientras no se llegue al final del archivo EOF = -1 
+            System.out.print((char)caracter);  //se nuestra por pantalla
+            caracter = br.read();   //se lee el siguiente carácter del archivo 
+        }
+    }catch (FileNotFoundException e) { 
+    System.out.println(e.getMessage()); 
+    }catch (IOException e) { 
+    System.out.println(e.getMessage()); } 
+}
+    
+    
+    
+    public void restaurarPedidosDeCliente() {
+    System.out.print("Ingrese el DNI del cliente cuyos pedidos quiere restaurar: ");
+    String dni = sc.nextLine();
+
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("pedidos.dat"))) {
+        Pedido p;
+        while ((p = (Pedido) ois.readObject()) != null) {
+            if (p.getClientePedido().getDni().equals(dni)) {
+                pedidos.add(p);
+            }
+        }
+        System.out.println("Pedidos de " + dni + " restaurados correctamente.");
+    } catch (EOFException e) {
+        System.out.println("Fin del archivo alcanzado.");
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Error al restaurar pedidos: " + e.getMessage());
+    }
+}
+    
+    public void backupClientesConPedidos() {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("clientesPedidos.dat"))) {
+        HashMap<String, Cliente> clientesConPedidos = new HashMap<>();
+        
+        for (Pedido p : pedidos) {
+            clientesConPedidos.put(p.getClientePedido().getDni(), p.getClientePedido());
+        }
+
+        for (Cliente c : clientesConPedidos.values()) {
+            oos.writeObject(c);
+        }
+
+        System.out.println("Backup de clientes con pedidos realizado con éxito.");
+    } catch (IOException e) {
+        System.out.println("Error al guardar backup: " + e.getMessage());
+    }
+}
+    
+    public void backupCompleto() {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("backupCompleto.dat"))) {
+        oos.writeObject(clientes);
+        oos.writeObject(articulos);
+        oos.writeObject(pedidos);
+        System.out.println("Backup completo realizado en backupCompleto.dat");
+    } catch (IOException e) {
+        System.out.println("Error al realizar backup: " + e.getMessage());
+    }
+}
+    
+    public void restaurarDesdeBackupCompleto() {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("backupCompleto.dat"))) {
+        clientes = (HashMap<String, Cliente>) ois.readObject();
+        articulos = (HashMap<String, Articulo>) ois.readObject();
+        pedidos = (ArrayList<Pedido>) ois.readObject();
+        System.out.println("Datos restaurados desde backupCompleto.dat.");
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Error al restaurar backup: " + e.getMessage());
+    }
+}
+    
+    //IMPORTANTE 
+    public void generarInformeVentasMensuales() {
+    HashMap<Integer, Double> ventasPorMes = new HashMap<>();
+
+    for (Pedido p : pedidos) {
+        int mes = p.getFechaPedido().getMonthValue();
+        ventasPorMes.put(mes, ventasPorMes.getOrDefault(mes, 0.0) + totalPedido(p));
+    }
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("ventasMensuales.txt"))) {
+        bw.write("Mes\tTotal Ventas\n");
+        for (int mes : ventasPorMes.keySet()) {
+            bw.write(mes + "\t" + ventasPorMes.get(mes) + "\n");
+        }
+        System.out.println("Informe de ventas generado en ventasMensuales.txt.");
+    } catch (IOException e) {
+        System.out.println("Error al generar informe: " + e.getMessage());
+    }
+}
+    
+    public void restaurarPedidosCaros() {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("pedidosCaros.dat"))) {
+        Pedido p;
+        while ((p = (Pedido) ois.readObject()) != null) {
+            if (totalPedido(p) > 500) {
+                pedidos.add(p);
+            }
+        }
+        System.out.println("Pedidos con importe > 500€ restaurados.");
+    } catch (EOFException e) {
+        System.out.println("Fin del archivo alcanzado.");
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Error al restaurar pedidos: " + e.getMessage());
+    }
+}
+    
+    
+    
+    
     public void ordenarPedidosPorFechaAscendente() {
     pedidos.sort(Comparator.comparing(Pedido::getFechaPedido));
 }
@@ -1078,6 +1337,9 @@ public void ordenarArticulosPorDemanda() {
 }
 //</editor-fold>
    
-   
-   
+  
+
+
+
+
 }
