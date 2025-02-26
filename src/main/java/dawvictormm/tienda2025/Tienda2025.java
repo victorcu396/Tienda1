@@ -4,6 +4,7 @@
 
 package dawvictormm.tienda2025;
 
+        //<editor-fold defaultstate="collapsed" desc="IMPORTS">
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
@@ -19,26 +20,45 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+
+//</editor-fold>
 
 /**
  *
  * @author alu16d
  */
+
 public class Tienda2025 {
 
-    public Tienda2025() {
-        pedidos = new ArrayList<>();
-        articulos = new HashMap<>();
-        clientes = new HashMap<>();
-    }
-    
     Scanner sc=new Scanner(System.in);
     private ArrayList<Pedido> pedidos;
     private HashMap <String, Articulo> articulos;
     private HashMap <String, Cliente> clientes;
     
+    //<editor-fold defaultstate="collapsed" desc="GETTERS">
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public HashMap<String, Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public HashMap<String, Cliente> getClientes() {
+        return clientes;
+    }
+//</editor-fold>
+    
+    
+    public Tienda2025() {
+        pedidos = new ArrayList<>();
+        articulos = new HashMap<>();
+        clientes = new HashMap<>();
+    }
+
      public static void main(String[] args) {
        Tienda2025 t=new Tienda2025();
        t.leerArchivos();
@@ -47,7 +67,8 @@ public class Tienda2025 {
        t.backup();
        
      }
-    //<editor-fold defaultstate="collapsed" desc="CARGA  DATOS">
+     
+ //<editor-fold defaultstate="collapsed" desc="CARGA  DATOS">
     /**
  public void cargaDatos(){
         
@@ -144,15 +165,16 @@ public class Tienda2025 {
 //</editor-fold>
     
   
-    //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  PEDIDOS">
+     //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  PEDIDOS">
      private void MenuPedidos() {
         Scanner sc = new Scanner(System.in);
         int opcion=0;
         do {
             System.out.println("\n  \t\t-----GESTION DE PEDIDOS-----  \n");
             System.out.println("\t\t1. Crear Pedido");
-            System.out.println("\t\t2. Listar Pedidos");
-            System.out.println("\t\t3. Listar Pedidos Por Total Del Precio");
+            System.out.println("\t\t2. Eliminar Pedido");
+            System.out.println("\t\t3. Listar Pedidos");
+            System.out.println("\t\t4. Listar Pedidos Por Total Del Precio");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -163,10 +185,14 @@ public class Tienda2025 {
                     break;
                 }
                 case 2:{
-                    listarPedidos();
+                    eliminarPedido();
                     break;
                 }
                 case 3:{
+                    listarPedidos();
+                    break;
+                }
+                case 4:{
                     listarPedidosPorTotal();
                     break;
                 }
@@ -273,7 +299,32 @@ public class Tienda2025 {
         }
     }
      
+     public void eliminarPedido() {
+        System.out.print("Ingrese el ID del pedido a eliminar: ");
+        String idPedido = sc.nextLine();
 
+        boolean eliminado = pedidos.removeIf(p -> {
+            if (p.getIdPedido().equals(idPedido)) {
+                for (LineaPedido lp : p.getCestaCompra()) {
+                    Articulo a = articulos.get(lp.getIdArticulo());
+                    if (a != null) {
+                        a.setExistencias(a.getExistencias() + lp.getUnidades());
+                    }
+                }
+                return true; // Indica que el pedido debe eliminarse
+            }
+            return false;
+        }
+        );
+
+        if (eliminado) {
+            System.out.println("Pedido eliminado y stock actualizado.");
+        } else {
+            System.out.println("Pedido no encontrado.");
+        }
+     }
+     
+     
     private void listarPedidos() {
          
         Collections.sort(pedidos);
@@ -290,7 +341,6 @@ public class Tienda2025 {
         }
     }
 
-   
     public void listarPedidosPorTotal() {
          Scanner sc= new Scanner(System.in);
         
@@ -330,7 +380,7 @@ public class Tienda2025 {
     
 //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  ARTÍCULOS">
+     //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  ARTÍCULOS">
     private void MenuArticulos() {
         Scanner sc = new Scanner(System.in);
         int opcion=0;
@@ -419,8 +469,16 @@ public class Tienda2025 {
     System.out.println("Artículo añadido correctamente.");
     }
      
-     private void eliminarArticulo(){
-        System.out.println("Hola");
+     public void eliminarArticulo() {
+        System.out.print("Ingrese el ID del artículo a eliminar: ");
+        String idArticulo = sc.nextLine();
+        if (articulos.containsKey(idArticulo)) {
+            pedidos.forEach(p -> p.getCestaCompra().removeIf(lp -> lp.getIdArticulo().equals(idArticulo)));
+            articulos.remove(idArticulo);
+            System.out.println("Artículo eliminado correctamente.");
+        } else {
+            System.out.println("Artículo no encontrado.");
+        }
     }
     
     private void listarArticulos() {
@@ -557,7 +615,7 @@ public class Tienda2025 {
     
 //</editor-fold>
  
-    //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  CLIENTES">
+     //<editor-fold defaultstate="collapsed" desc="GESTIÓN  DE  CLIENTES">
     private void MenuClientes() {
         Scanner sc = new Scanner(System.in);
         int opcion=0;
@@ -602,7 +660,7 @@ public class Tienda2025 {
         }while(opcion !=0);
     }
     
-     private void nuevoCliente() {
+    private void nuevoCliente() {
          String dni, nombre, telefono, email;
 
     do {
@@ -640,8 +698,16 @@ public class Tienda2025 {
     System.out.println("Cliente añadido correctamente.");
     }
     
-     private void eliminarCliente() {
-         System.out.println("HOLA");
+    public void eliminarCliente() {
+        System.out.print("Ingrese el DNI del cliente a eliminar: ");
+        String dni = sc.nextLine();
+        if (clientes.containsKey(dni)) {
+            pedidos.removeIf(p -> p.getClientePedido().getDni().equals(dni));
+            clientes.remove(dni);
+            System.out.println("Cliente eliminado correctamente.");
+        } else {
+            System.out.println("Cliente no encontrado.");
+        }
     }
     
      
@@ -664,7 +730,7 @@ public class Tienda2025 {
         }
     }
    
-  public void clientesTxtBackup() {
+    public void clientesTxtBackup() {
         try(BufferedWriter bfwClientes=new BufferedWriter(new FileWriter("clientes.csv"))){
             for (Cliente c : clientes.values()) {
                 bfwClientes.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
@@ -693,7 +759,7 @@ public class Tienda2025 {
     
 //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="PERSISTENCIA">
+     //<editor-fold defaultstate="collapsed" desc="PERSISTENCIA">
     public void backup() {
     try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream ("articulos.dat"));
          ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream ("clientes.dat"));
