@@ -660,7 +660,7 @@ public class Tienda2025 {
                     break;
                 }
                 case 7:{
-                    restaurarPedidosDeCliente();
+                    lecturaCaracterPorCaracter();
                     break;
                 }        
                 case 0:{
@@ -1123,6 +1123,7 @@ public class Tienda2025 {
     
     
     
+    //<editor-fold defaultstate="collapsed" desc="Metodos Que Ya USAMOS">
     
     public void ordenarPedidosPorFechaAscendente() {
     pedidos.sort(Comparator.comparing(Pedido::getFechaPedido));
@@ -1335,6 +1336,8 @@ public void ordenarArticulosPorDemanda() {
             .max(Comparator.comparing(a -> cantidadTotalVendida(a.getIdArticulo()))) // Compara por cantidad vendida
             .orElse(null); // Devuelve null si no hay artículos
 }
+//</editor-fold>
+    
 //</editor-fold>
    
   
