@@ -1,4 +1,4 @@
-/*
+/**
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
@@ -25,7 +25,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //</editor-fold>
 
@@ -45,11 +48,9 @@ public class Tienda2025 {
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
     }
-
     public HashMap<String, Articulo> getArticulos() {
         return articulos;
     }
-
     public HashMap<String, Cliente> getClientes() {
         return clientes;
     }
@@ -65,63 +66,587 @@ public class Tienda2025 {
      public static void main(String[] args) {
        Tienda2025 t=new Tienda2025();
        t.leerArchivos();
-  //     t.cargaDatos();
+       t.cargaDatos();
        t.mostrarMenuPrincipal();
        t.backup();
        
      }
      
  //<editor-fold defaultstate="collapsed" desc="CARGA  DATOS">
-    /**
- public void cargaDatos(){
-        
-       clientes.put("80580845T",new Cliente("80580845T","ANA","658111111","ana@gmail.com"));
-       clientes.put("36347775R",new Cliente("36347775R","LOLA","649222222","lola@gmail.com"));
-       clientes.put("63921307Y",new Cliente("63921307Y","JUAN","652333333","juan@gmail.com"));
-       clientes.put("02337565Y",new Cliente("02337565Y","EDU","634567890","edu@gmail.com"));
-              
+       public void cargaDatos(){
+       clientes.put("90015161S",new Cliente("90015161S","ANA ","658111111","ana@gmail.com"));
+       clientes.put("96819473F",new Cliente("96819473F","ANTONIO","649222222","antonio@gmail.com"));
+       clientes.put("95767515T",new Cliente("95767515T","AURORA","652333333","aurora@gmail.com"));
+       clientes.put("97801164N",new Cliente("97801164N","EMILIO","649222222","emilio@gmail.com"));
+       clientes.put("58440531S",new Cliente("58440531S","EVA","652333333","eva@gmail.com"));
+         
+       
        articulos.put("1-11",new Articulo("1-11","RATON LOGITECH ST ",14,15));
        articulos.put("1-22",new Articulo("1-22","TECLADO STANDARD  ",9,18));
        articulos.put("2-11",new Articulo("2-11","HDD SEAGATE 1 TB  ",16,80));
-       articulos.put("2-22",new Articulo("2-22","SSD KINGSTOM 256GB",9,70));
-       articulos.put("2-33",new Articulo("2-33","SSD KINGSTOM 512GB",0,200));
+       articulos.put("2-22",new Articulo("2-22","SSD KINGSTOM 256GB",0,70));
+       articulos.put("2-33",new Articulo("2-33","SSD KINGSTOM 512GB",5,200));
        articulos.put("3-22",new Articulo("3-22","EPSON PRINT XP300 ",5,80));
-       articulos.put("4-11",new Articulo("4-11","ASUS  MONITOR  22 ",5,100));
+       articulos.put("4-11",new Articulo("4-11","ASUS  MONITOR  22 ",10,100));
        articulos.put("4-22",new Articulo("4-22","HP MONITOR LED 28 ",5,180));
-       articulos.put("4-33",new Articulo("4-33","SAMSUNG ODISSEY G5",2,580));
-       
+      
        LocalDate hoy = LocalDate.now();
-       pedidos.add(new Pedido("80580845T-001/2024",clientes.get("80580845T"),hoy.minusDays(1), new ArrayList<>
-        (List.of(new LineaPedido("1-11",3),new LineaPedido("4-22",3)))));                                                                                                                                                               
-       pedidos.add(new Pedido("80580845T-002/2024",clientes.get("80580845T"),hoy.minusDays(2), new ArrayList<>
-        (List.of(new LineaPedido("4-11",3),new LineaPedido("4-22",2),new LineaPedido("4-33",4)))));
-       pedidos.add(new Pedido("36347775R-001/2024",clientes.get("36347775R"),hoy.minusDays(3), new ArrayList<>
+       pedidos.add(new Pedido("90015161S-001/2025",clientes.get("90015161S"),hoy.minusDays(1), new ArrayList<>
+        (List.of(new LineaPedido("2-33",5),new LineaPedido("4-11",5)))));                                                                                                                                                               
+       pedidos.add(new Pedido("90015161S-002/2025",clientes.get("90015161S"),hoy.minusDays(2), new ArrayList<>
+        (List.of(new LineaPedido("2-11",5),new LineaPedido("4-11",1)))));
+       pedidos.add(new Pedido("96819473F-001/2025",clientes.get("96819473F"),hoy.minusDays(3), new ArrayList<>
         (List.of(new LineaPedido("4-22",1),new LineaPedido("2-22",3)))));
-       pedidos.add(new Pedido("36347775R-002/2024",clientes.get("36347775R"),hoy.minusDays(5), new ArrayList<>
-        (List.of(new LineaPedido("4-33",3),new LineaPedido("2-11",3)))));
-       pedidos.add(new Pedido("63921307Y-001/2024",clientes.get("63921307Y"),hoy.minusDays(4), new ArrayList<>
-        (List.of(new LineaPedido("2-11",5),new LineaPedido("2-33",3),new LineaPedido("4-33",2)))));
+       pedidos.add(new Pedido("95767515T-001/2025",clientes.get("95767515T"),hoy.minusDays(5), new ArrayList<>
+        (List.of(new LineaPedido("1-11",3),new LineaPedido("2-11",3)))));
+       pedidos.add(new Pedido("97801164N-001/2025",clientes.get("97801164N"),hoy.minusDays(4), new ArrayList<>
+        (List.of(new LineaPedido("2-11",1),new LineaPedido("2-33",3),new LineaPedido("1-11",2)))));
+    } 
     
- 
-     for (Pedido pedido : pedidos) {
-         System.out.println(pedido);
-     }
-    
-        System.out.println("");
-        
-        System.out.println(clientes);
-       
-        System.out.println("");
-        
-        System.out.println(articulos);
-        
-        System.out.println("");
- }
-    */
 //</editor-fold>     
   
     
+       //<editor-fold defaultstate="collapsed" desc="EXTRAS  con  MENU">
+       
+       private void MenuExtras() {
+        Scanner sc = new Scanner(System.in);
+        int opcion=0;
+        do {
+            System.out.println("\n  \t\t-----GESTION DE EJERCICIOS EXTRAS-----  \n");
+            System.out.println("\t\t1. Mostrar clientes con y sin pedidos");
+            System.out.println("\t\t2. Mostrar clientes con y sin pedidos y el dinero gastado");
+            System.out.println("\t\t3. Pedidos ordenados por articulos vendidos");
+            System.out.println("\t\t4. Listar Articulos por Seccion");
+            System.out.println("\t\t5. Listar Usuarios que han comprado un artículo específico y el nº de veces");
+            System.out.println("\t\t6. Pedidos ordenados por importe");
+            System.out.println("\t\t7. Clientes ordenados por gastos");
+            System.out.println("\t\t0. Volver");
+            System.out.print("\t\tSeleccione una opción: ");
+
+            opcion=sc.nextInt(); 
+            switch (opcion) { 
+                case 1:{
+                    cientesConSinPedidos();
+                    break;
+                }
+                case 2:{
+                    cientesConSinPedidosyDineroGastado();
+                    break;
+                }
+                case 3:{
+                    pedidosOrdenadosPorArticuloVendido();
+                    break;
+                }
+                case 4:{
+                    listarArticulosPorSeccion();
+                    break;
+                }
+                case 5:{
+                    articuloUsuariosLoHanComprado();
+                    break;
+                }
+                case 6:{
+                    perdidosOrdenadosPorImporte();
+                    break;
+                }
+                case 7:{
+                    clientesOrdenadosPorGasto();
+                    break;
+                }
+                case 0:{
+                    System.out.println("\t\tVolviendo al menú principal...");
+                    break;
+                }
+            }
+        }while(opcion !=0);
+    }
+       
+       
+       
+       
+       
+    public void cientesConSinPedidos(){
+        ArrayList<Cliente> clientesSin = new ArrayList();
+        ArrayList<Cliente> clientesCon = new ArrayList();
+               
+        try(BufferedWriter bfwClientesCon=new BufferedWriter(new FileWriter("clientesCon.csv"));
+            BufferedWriter bfwClientesSin=new BufferedWriter(new FileWriter("clientesSin.csv"))    ){
+            
+            for (Cliente c : clientes.values()) {
+                /* ESTILO CLÁSICO 
+                boolean tienePedido = false;
+                for (Pedido p : pedidos) {
+                    if (p.getClientePedido() == c) {
+                        tienePedido = true;
+                        break;
+                    }
+                } 
+                if (tienePedido) {
+                   bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                } else{
+                   bfwClientesSin.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n"); clientesSin.add(c);
+                }*/
+
+                /* CON STREAMS Y EL METODO anyMatch */
+                if (pedidos.stream().anyMatch(p-> p.getClientePedido().equals(c))){
+                   bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                } else{
+                   bfwClientesSin.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                }
+            }
+        }catch (FileNotFoundException e) {
+                 System.out.println(e.toString());   
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
  
+        try(Scanner scClientesCon=new Scanner(new File("clientesCon.csv"))){
+            while (scClientesCon.hasNextLine()){
+                String [] atributos = scClientesCon.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesCon.add(c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        
+        try(Scanner scClientesSin=new Scanner(new File("clientesSin.csv"))){
+            while (scClientesSin.hasNextLine()){
+                String [] atributos = scClientesSin.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesSin.add(c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        System.out.println("\nCLIENTES CON PEDIDOS:");
+        clientesCon.forEach(System.out::println);
+        System.out.println("\nCLIENTES SIN PEDIDOS:");
+        clientesSin.forEach(System.out::println);
+    }
+    
+    
+    public void cientesConSinPedidosyDineroGastado(){
+        ArrayList<Cliente> clientesSin = new ArrayList();
+        ArrayList<Cliente> clientesCon = new ArrayList();
+        ArrayList<Cliente> clientesMas1000 = new ArrayList();
+               
+        try(BufferedWriter bfwClientesCon=new BufferedWriter(new FileWriter("clientesCon.csv"));
+            BufferedWriter bfwClientesSin=new BufferedWriter(new FileWriter("clientesSin.csv"));
+            BufferedWriter bfwClientesMas1000=new BufferedWriter(new FileWriter("clientesMas1000.csv")))
+        {
+        /* USAMOS EL MÉTODO totalCliente(c) PARA CALCULAR EL TOTAL GASTADO POR UN CLIENTE EN TODOS SUS PEDIDOS
+           DESPUÉS VEREMOS ALTERNATIVAS CON PROGRAMACIÓN FUNCIONAL PARA DESARROLLAR ESTE MÉTODO
+            
+           EN ESTA VERSION DEL EJERCICIO SABEMOS QUE UN CLIENTE CON GASTO>1000 O  >0 TIENE PEDIDOS, EL RESTO NO
+        */    
+            for (Cliente c : clientes.values()){
+                if (totalCliente(c)==0){
+                    bfwClientesSin.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                }else if (totalCliente(c)>=1000){
+                      bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                      bfwClientesMas1000.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                    }else {
+                       bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                    }
+            }
+            /* EXACTAMENTE LO MISMO SE PUEDE HACER ESTRUCTURANDO LAS CONDICIONES DE OTRA FORMA     
+                if (totalCliente(c)>0){
+                    bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                    bfwClientesMas1000.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                   
+                }else if (totalCliente(c)>0){
+                       bfwClientesCon.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                    }else {
+                        bfwClientesSin.write(c.getDni() + "," + c.getNombre() + "," + c.getTelefono() + "," + c.getEmail() + "\n");
+                    }
+            */
+            
+        }catch (FileNotFoundException e) {
+                 System.out.println(e.toString());   
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+ 
+        try(Scanner scClientesCon=new Scanner(new File("clientesCon.csv"))){
+            while (scClientesCon.hasNextLine()){
+                String [] atributos = scClientesCon.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesCon.add(c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        
+        try(Scanner scClientesSin=new Scanner(new File("clientesSin.csv"))){
+            while (scClientesSin.hasNextLine()){
+                String [] atributos = scClientesSin.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesSin.add(c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        
+        try(Scanner scClientesSin=new Scanner(new File("clientesMas1000.csv"))){
+            while (scClientesSin.hasNextLine()){
+                String [] atributos = scClientesSin.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesMas1000.add(c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        System.out.println("\nCLIENTES CON PEDIDOS:");
+        clientesCon.forEach(System.out::println);
+        System.out.println("\nCLIENTES SIN PEDIDOS:");
+        clientesSin.forEach(System.out::println);
+        System.out.println("\nCLIENTES CON MAS DE 1000€ GASTADOS:");
+        clientesMas1000.forEach(System.out::println);
+    }
+    
+    
+    public void pedidosOrdenadosPorArticuloVendido(){
+        String id;
+        do{
+            System.out.println("Teclea idArticulo para contabilizar en pedidos:");
+            id=sc.next();
+        }while(!articulos.containsKey(id));
+        
+        System.out.println("Unidades vendidas del artículo: " + articulos.get(id).getDescripcion());
+       
+        final String id2 = id;
+        pedidos.stream().sorted(Comparator.comparing(p-> articuloEnPedido2(id2, (Pedido)p)).reversed()).
+                forEach(p-> System.out.println("Pedido " +p.getIdPedido() + "-" + p.getFechaPedido()  
+                     + " : " + articuloEnPedido2(id2,p) + " unidades"  ));
+    }  
+      
+    /* METODO articuloEnPedido CLÁSICO */
+    public int articuloEnPedido(String idArticulo, Pedido p){
+       int contador=0;
+       for (LineaPedido l:p.getCestaCompra()){
+           if (l.getIdArticulo().equals(idArticulo)){
+               contador+=l.getUnidades();
+               break;
+           }
+       }
+       return contador;
+    }
+    
+    /* MÉTODO articuloEnPedido PROGRAMACIÓN FUNCIONAL */
+         
+    public int articuloEnPedido2(String idArticulo, Pedido p){
+        return p.getCestaCompra().stream().filter(l->l.getIdArticulo().equals(idArticulo))
+            .mapToInt(LineaPedido::getUnidades).sum();
+    }
+    
+    
+       
+    /****************************************************************************************
+        EJERCICIO - LISTADO DE USUARIOS QUE HAN COMPRADO UN ARTÍCULO DETERMINADO 
+                        
+        IMPORTANTE TENER EN CUENTA QUE UN USUARIO PUEDE HABER COMPRADO EL MISMO ARTÍCULO EN PEDIDOS
+        DISTINTOS Y NO DEBEN DE SALIR VARIAS LÍNEAS EN EL LISTADO PARA ESE USUARIO/A. 
+        DEBE DE SALIR UNA ÚNICA LÍNEA CON EL TOTAL DE UNIDADES DEL ARTÍCULO COMPRADAS POR EL USUARIO
+        ESTO ES UNA COMPLEJIDAD PARA EL EJERCICIO 
+    *****************************************************************************************/
+    public void articuloUsuariosLoHanComprado(){
+        String id;
+        do{
+            System.out.println("Teclea idArticulo para contabilizar en pedidos:");
+            id=sc.next();
+        }while(!articulos.containsKey(id));
+        
+        System.out.println("Usuarios que han comprado el articulo: " + articulos.get(id).getDescripcion());
+        
+        /* METODO CLÁSICO 
+        for (Cliente c:clientes.values()){
+            int unidades=0;
+            for (Pedido p:pedidos){
+                if (p.getClientePedido().equals(c)){
+                    for(LineaPedido l:p.getCestaCompra()){
+                        if (l.getIdArticulo().equals(id)){
+                            unidades+= l.getUnidades();
+                        }
+                    }
+                }
+            }
+            if (unidades>0){
+                System.out.println(c.getNombre()+
+                  " ha comprado " + unidades + " unidades") ;
+            }
+        }*/
+        
+        // STREAMS 
+        final String id2=id;
+        for (Cliente c:clientes.values()){
+            int unidades= pedidos.stream().filter(p-> p.getClientePedido().equals(c))
+                    .mapToInt(p -> p.getCestaCompra().stream().filter(l->l.getIdArticulo().equals(id2))
+                        .mapToInt(LineaPedido::getUnidades).sum()).sum();     
+            
+            if (unidades>0){
+                System.out.println(c.getNombre() + ": " + unidades);
+            }
+        }                   
+    }
+    
+    
+    
+    
+    /**************************************************************************************
+    ALGUNAS ORDENACIONES RELIZADAS CON COMPARATORS APOYADAS EN LOS METODOS totalPedido() totalCliente() 
+    ***************************************************************************************/
+    
+    
+    public void perdidosOrdenadosPorImporte(){
+        pedidos.stream().sorted(Comparator.comparing(p->totalPedido((Pedido) p))
+            .reversed()).forEach(p-> System.out.println(p.getIdPedido() + ":\t "+ totalPedido(p)));
+    }
+    
+    public void clientesOrdenadosPorGasto(){
+        clientes.values().stream().sorted(Comparator.comparing(c->totalCliente((Cliente) c))
+            .reversed()).forEach(c-> System.out.println(c.getNombre() + ":\t "+ totalCliente(c)));
+    }
+    
+         /* EJERCICIO CON STREAMS DE LISTADOS DE ARTÍCULOS POR SECCIÓN */
+    public void listarArticulosPorSeccion() {
+        Scanner sc=new Scanner(System.in);
+        String opcion;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tLISTAR ARTICULOS\n");
+            System.out.println("\t\t\t\t0 - TODOS LOS ARTICULOS");
+            System.out.println("\t\t\t\t1 - PERIFERICOS");
+            System.out.println("\t\t\t\t2 - ALMACENAMIENTO");
+            System.out.println("\t\t\t\t3 - IMPRESORAS");
+            System.out.println("\t\t\t\t4 - MONITORES");
+            System.out.println("\t\t\t\t9 - SALIR");
+            do
+                opcion=sc.next();
+            while (!opcion.matches("[0-4,9]"));
+            if (opcion!="9"){
+                listados(opcion);
+            }
+        }while (!opcion.equals("9"));
+    }
+    public void listados (String seccion){
+        String[] secciones={"TODAS","PERIFERICOS","ALMACENAMIENTO","IMPRESORAS","MONITORES"};
+        int s=Integer.parseInt(seccion);
+        if (seccion.equals("0")){ 
+            System.out.println("LISTADO ARTICULOS DE LA SECCION: " + secciones[s]);
+            articulos.values().stream().forEach(System.out::println);
+        } else{
+            System.out.println("LISTADO ARTICULOS DE LA SECCION: " + secciones[s]);
+            articulos.values().stream().filter(a -> a.getIdArticulo().startsWith(seccion))
+                    .forEach(System.out::println);
+        }
+    }
+    
+     /* PARA HACER LISTADOS ORDENADOS TAN SOLO HAY QUE AÑADIR .sorted() al stream()
+    
+    Si no le pasamos argumento al sorted() Java buscará en la clase Articulo a ver si hemos 
+    implementado el interface Comparable y usará el criterio que hayamos programado en el método
+    public int compareTo(Articulo a)
+    
+    Si creamos clases Comparator propias podemos usarlas para definir nuestras propias ordenaciones
+    o bien utilizar el método Comparator.comparing(predicado)
+    
+    También podemos cambiar el sentido de las ordenaciones con .reversed();
+    
+    LAS POSIBILIDADES SON ILIMITADAS Y SE TRATA DE PROBAR, PROBAR Y PROBAR
+    */
+    
+    
+    
+    
+    
+       /*************************************************************************************
+    * EJERCICIO DE BACKUPS DE PEDIDOS POR CLIENTE - 1 ARCHIVO DE PEDIDOS POR CADA CLIENTE
+    ***************************************************************************************/
+    
+    public void backupPedidosClientes() {
+        boolean tienePedidos; 
+        for (Cliente c:clientes.values()){
+            tienePedidos=false;       
+            for (Pedido p: pedidos ){
+                if(p.getClientePedido().equals(c)){
+                    tienePedidos=true;
+                    break;
+                }
+            }
+            if (tienePedidos){
+                String archivo="PedidosCliente_" + c.getNombre()+".dat";
+                try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo)))
+                {
+                   for (Pedido p: pedidos ){
+                        if(p.getClientePedido().equals(c)) {
+                            oos.writeObject(p);
+                        }
+                   }
+                } catch (IOException e) {
+                   System.out.println(e.toString());
+                } 
+                
+            }
+        }
+        System.out.println("ARCHIVOS CREADOS CORRECTAMENTE\n");
+        
+        /*AHORA SOLICITAMOS EL DNI DE UN CLIENTE PARA MOSTRAR SUS PEDIDOS
+        DESDE EL ARCHIVO .dat CORRESPONDIENTE
+        */ 
+        String dniT; 
+        //NO PERMITIMOS ENTRADA DE DNIs NO VÁLIDOS O QUE NO ESTÁN EN LA TIENDA
+        do{
+            System.out.println("DNI CLIENTE:");
+            dniT=sc.next().toUpperCase();    
+        }while (!clientes.containsKey(dniT)||!MetodosAux.validarDNI(dniT));
+        
+        //COMPROBAMOS AHORA SI EL DNI TIENE PEDIDOS.
+        //SI NO LOS TIENE NO SE CREÓ SU ARCHIVO
+        tienePedidos=false;       
+        for (Pedido p: pedidos ){
+            if(p.getClientePedido().equals(clientes.get(dniT))) {
+                tienePedidos=true;
+                break;
+            }
+        }
+        
+        if (tienePedidos){
+            String archivo="PedidosCliente_" + clientes.get(dniT).getNombre()+".dat";
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo)))
+            {
+                Pedido p=null;
+                while ( (p=(Pedido)ois.readObject()) != null){
+                     System.out.println("\nPEDIDO: " + p.getIdPedido() + " DE: " + p.getClientePedido().getNombre());
+                     for (LineaPedido l:p.getCestaCompra()){
+                         System.out.println(articulos.get(l.getIdArticulo()).getDescripcion()
+                                 + "\t Unidades: " +l.getUnidades());
+                     }
+                } 
+            } catch (EOFException e) {
+                System.out.println("Fin archivo");
+            } catch (IOException e) {
+                System.out.println("No existen pedidos para ese DNI");
+            } catch (ClassNotFoundException ex) {
+            }
+        }
+    }
+    
+    
+
+        /******************************************
+    EJEMPLOS VARIOS DE USO API STREAMS .collect
+    *******************************************/  
+    
+    public void apiStreams(){
+                   
+        /* .collect() PERMITE "RECOLECTAR" LOS RESULTADOS DE PROCESAR LOS OBJETOS DE UN STREAM
+        Y ALMACENARLOS EN CUALQUIER OTRA COLECCIÓN LIST-SET-MAP DESPUES DE HACERLES CUALQUIER
+        TIPO DE PROCESAMIENTO QUE PODAMOS IMAGINAR. 
+        
+            .collect(Collectors.toList())
+            .collect(Collectors.toSet())
+            .collect(Collectors.toMap())
+        
+        utilizando  .map()
+        LOS OBJETOS LOS PODREMOS "RECOLECTAR" COMPLETOS, O SÓLO EL ATRIBUTO O PARTE DEL ATRIBUTO
+        QUE NOS INTERESE, ADEMÁS DE PODER AÑADIR A LA NUEVA COLECCIÓN VALORES CALCULADOS "A MAYORES"
+        */
+           
+        /*****************************************************************************************
+        EJEMPLO1 : ¿Cuántos artículos hay en cada Sección?
+        ******************************************************************************************
+        
+        UTILIZANDO EL MÉTODO .Collectors.groupingBy() agrupo los articulos por secciones
+        y para saber cuantos hay de cada seccion "cuenteo" el agrupamiento con Collectors.counting()
+
+        previamente aislamos/mapeamos (map) la sección de cada articulo (primer caracter del atributo idArticulo)
+        */
+        
+        Map<Character,Long> articulosEnSeccion= articulos.values().stream()
+               .map(a->a.getIdArticulo().charAt(0))
+               .collect(Collectors.groupingBy(a->a,Collectors.counting()));
+        
+        System.out.println(articulosEnSeccion);
+        System.out.println("");
+        
+        /*EN PROGRAMACIÓN CLÁSICA PODEMOS OBTENER LOS MISMOS RESULTADOS
+        PERO ES MÁS COMPLICADO YA QUE EL HASHMAP DE ARTICULOS NO ESTÁ ORDENADO
+        Y NECESITAMOS USAR UNA LISTA AUXILIAR*/
+        
+        List <Articulo> articulosOrd= articulos.values().stream()
+                .sorted(Comparator.comparing(Articulo::getIdArticulo))
+                .collect(Collectors.toList());
+        
+        //UNA VEZ ORDENADA LA LISTA VAMOS CONTABILIZANDO SECCIONES
+        HashMap<Character,Long> articulosEnSeccion2=new HashMap();
+        char seccn='1';
+        long total=0;
+        for (Articulo a:articulosOrd){
+            if ((a.getIdArticulo().charAt(0)==seccn)){
+                total++;
+            }else {
+                articulosEnSeccion2.put(seccn,total);
+                seccn=a.getIdArticulo().charAt(0);
+                total=1;
+            }      
+        }
+        //PARA ESCRIBIR EN EL HASHMAP LA ÚLTIMA SECCIÓN O SINO LA PERDERÍAMOS
+        articulosEnSeccion2.put(seccn,total);
+        
+        
+        for (char s:articulosEnSeccion2.keySet()){
+            System.out.println("En la SECCIÓN: " + s + " hay "
+                    + articulosEnSeccion2.get(s) + " artículos");
+        }
+        
+        /********************************************************************************************** 
+        EJEMPLO2 : ¿Cuál es el artículo más barato y más caro de una sección introducida por teclado? 
+        ***********************************************************************************************/
+        
+        String seccion;
+        do{
+            System.out.println("Teclea la Sección para conocer artículo más caro y más barato:");
+            seccion=sc.next();
+        }while(!seccion.matches("[1-4]"));
+        
+        
+        //TODO CON MÉTODOS DEL API DE STREAMS
+        
+        final String sec=seccion;
+        var max= articulos.values().stream()
+               .filter(a->a.getIdArticulo().startsWith(sec))
+               .collect(Collectors.maxBy(Comparator.comparing(Articulo::getPvp)));
+        
+        var min= articulos.values().stream()
+               .filter(a->a.getIdArticulo().startsWith(sec))
+               .collect(Collectors.minBy(Comparator.comparing(Articulo::getPvp)));
+        
+        System.out.println(min);
+        System.out.println(max);
+        
+        /* ESTILO CLASICO-MIXTO
+        PODEMOS CREAR UN LISTA CON LOS ARTÍCULOS DE ESA SECCIÓN, ORDENARLA POR PRECIO CON UN COMPARATOR
+        (OJO PORQUE EL COMPARATOR HAY QUE CREARLO A PARTE)
+        Y TOMAR COMO MÁXIMO EL ÚLTIMO Y MÍNIMO EL 1º
+        */ 
+                    
+        List<Articulo> listaMinMax = articulos.values().stream()
+             .filter(a->a.getIdArticulo().startsWith(sec))
+             .collect(Collectors.toList());
+        
+        Collections.sort(listaMinMax//, new ComparaArticulosPorPVP()
+        );
+        System.out.println("");
+        System.out.println(listaMinMax.getFirst());
+        System.out.println(listaMinMax.getLast());
+    }
+
+
+//</editor-fold>
+       
+       
+       
+       
  //<editor-fold defaultstate="collapsed" desc="MENÚ  PRINCIPAL">
      private void mostrarMenuPrincipal() {
         Scanner sc = new Scanner(System.in);
@@ -133,6 +658,7 @@ public class Tienda2025 {
             System.out.println("\t\t3. GESTIÓN DE CLIENTES");
             System.out.println("\t\t4. Copia de Seguridad");
             System.out.println("\t\t5. Leer Archivos");
+            System.out.println("\t\t6. GESTIÓN DE EXTRAS");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -156,6 +682,10 @@ public class Tienda2025 {
                 }
                 case 5:{
                     leerArchivos();
+                    break;
+                }
+                case 6:{
+                    MenuExtras();
                     break;
                 }
                 case 0:{
@@ -369,6 +899,7 @@ public class Tienda2025 {
     }
      
     public double totalPedido(Pedido p) {
+        /* Versión clásica
         double total=0;
         for (LineaPedido l:p.getCestaCompra())
         {
@@ -376,6 +907,12 @@ public class Tienda2025 {
                     *l.getUnidades();
         }
         return total;
+        */
+        // Versión con Streams
+        return p.getCestaCompra().stream()
+                .mapToDouble(l -> articulos.get(l.getIdArticulo()).getPvp() * l.getUnidades())
+                .sum();
+
     }
     
     
@@ -395,6 +932,7 @@ public class Tienda2025 {
             System.out.println("\t\t4. Ordenar Artículos con Streams");
             System.out.println("\t\t5. Crear un archivo por Seccion");
             System.out.println("\t\t6. Listar Artticulos segun la Seccion (desde archivos)");
+            System.out.println("\t\t7. jeje");
             System.out.println("\t\t0. Volver");
             System.out.print("\t\tSeleccione una opción: ");
 
@@ -422,6 +960,10 @@ public class Tienda2025 {
                 }
                 case 6:{
                     leerArchivosSeccion();
+                    break;
+                }
+                case 7:{
+                    contarArticulosPorSeccion();
                     break;
                 }
                 case 0:{
@@ -521,6 +1063,13 @@ public class Tienda2025 {
         System.out.println("----- ARTÍCULOS ORDENADOS POR PRECIO -----");
         articulos.values().stream().sorted(new ComparaArticulosPorPrecio()).forEach(System.out::println);
         
+    }
+
+    
+    public void contarArticulosPorSeccion() {
+        articulos.values().stream()
+                .collect(Collectors.groupingBy(a -> a.getIdArticulo().charAt(0), Collectors.counting()))
+                .forEach((seccion, count) -> System.out.println("Sección " + seccion + ": " + count + " artículos"));
     }
 
      
@@ -660,7 +1209,7 @@ public class Tienda2025 {
                     break;
                 }
                 case 7:{
-                    lecturaCaracterPorCaracter();
+                    restaurarPedidosCaros();
                     break;
                 }        
                 case 0:{
@@ -721,7 +1270,6 @@ public class Tienda2025 {
         }
     }
     
-     
     private void listarClientes() {
          
         ArrayList<Cliente> clientesAux = new ArrayList(clientes.values());
@@ -740,6 +1288,46 @@ public class Tienda2025 {
             System.out.println(c);
         }
     }
+
+
+    public double totalCliente(Cliente c) {
+        /* Versión clásica
+        double total=0;
+        for (Pedido p:pedidos)
+        {
+            if (p.getClientePedido().equals(c)) {
+                total+=totalPedido(p);
+            }
+        }
+        return total;
+        */
+        // Versión con Streams
+        return pedidos.stream()
+                .filter(p -> p.getClientePedido().equals(c))
+                .mapToDouble(this::totalPedido)
+                .sum();
+
+    }
+    public double totalCliente2(Cliente c) {
+        
+        
+       //hacer el totalCliente, pero sin usar el totalPedido y usando streams y usando dos mapToDouble y sin usar flatMap 
+        return pedidos.stream()
+         .filter(p -> p.getClientePedido().equals(c))
+         .mapToDouble(p -> p.getCestaCompra().stream()
+            .mapToDouble(lp -> lp.getUnidades() * articulos.get(lp.getIdArticulo()).getPvp()).sum())
+         .sum();
+       
+
+
+      /*  return pedidos.stream()
+                .filter(p -> p.getClientePedido().equals(c))
+                .mapToDouble(p -> p.getCestaCompra().stream())
+                .mapToDouble(lp -> lp.getUnidades() * articulos.get(lp.getIdArticulo())
+                        .getPvp().sum()).sum();
+       */
+    }
+    
    
     public void clientesTxtBackup() {
         try(BufferedWriter bfwClientes=new BufferedWriter(new FileWriter("clientes.txt"))){
@@ -1106,14 +1694,14 @@ public class Tienda2025 {
 }
     
     public void restaurarPedidosCaros() {
-    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("pedidosCaros.dat"))) {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("pedidos.dat"))) {
         Pedido p;
         while ((p = (Pedido) ois.readObject()) != null) {
-            if (totalPedido(p) > 500) {
+            if (totalPedido(p) > 1000) {
                 pedidos.add(p);
             }
         }
-        System.out.println("Pedidos con importe > 500€ restaurados.");
+        System.out.println("hola mundo");
     } catch (EOFException e) {
         System.out.println("Fin del archivo alcanzado.");
     } catch (IOException | ClassNotFoundException e) {
@@ -1341,8 +1929,90 @@ public void ordenarArticulosPorDemanda() {
 //</editor-fold>
    
   
+//<editor-fold defaultstate="collapsed" desc="STREAMS">
+   
 
+// 1. PERSISTENCIA
+public void guardarPedidosPorCliente() {
+    for (Cliente cliente : clientes.values()) {
+        List<Pedido> pedidosCliente = pedidos.stream()
+                .filter(p -> p.getClientePedido().equals(cliente))
+                .toList();
 
+        if (!pedidosCliente.isEmpty()) {
+            String nombreArchivo = cliente.getNombre() + ".txt";
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
+                for (Pedido pedido : pedidosCliente) {
+                    writer.write(pedido.getIdPedido() + "," + cliente.getNombre() + "," + pedido.getFechaPedido());
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                System.out.println("Error al guardar pedidos para " + cliente.getNombre() + ": " + e.getMessage());
+            }
+        }
+    }
+}
 
+// 2. Streams
+public int calcularNumeroPedidosCliente(Cliente cliente) {
+    return (int) pedidos.stream()
+            .filter(p -> p.getClientePedido().equals(cliente))
+            .count();
+}
+public int calcularNumeroArticulosPedido(Pedido pedido) {
+        return pedido.getCestaCompra().stream()
+                .mapToInt(LineaPedido::getUnidades)
+                .sum();
+    }
+
+// 3. Sorted
+public void listadoClientes() {
+    clientes.values().stream()
+            .sorted(Comparator.comparing(Cliente::getDni))
+            .forEach(c -> System.out.println(c.getDni() + ", " + c.getNombre() + ", " + calcularNumeroPedidosCliente(c)));
+}
+
+public void listadoPedidosPorArticulos() {
+    pedidos.stream()
+            .filter(p -> calcularNumeroArticulosPedido(p) >= 2)
+            .sorted(Comparator.comparing(this::calcularNumeroArticulosPedido).reversed())
+            .forEach(p -> System.out.println(p.getIdPedido() + ", " + p.getClientePedido().getNombre() + ", " + calcularNumeroArticulosPedido(p)));
+}
+
+public void listadoPedidosUltimos15Dias() {
+    LocalDate hace15Dias = LocalDate.now().minusDays(15);
+    pedidos.stream()
+            .filter(p -> p.getFechaPedido().isAfter(hace15Dias))
+            .sorted(Comparator.comparing(Pedido::getFechaPedido).reversed())
+            .forEach(p -> System.out.println(p.getIdPedido() + ", " + p.getFechaPedido() + ", " + p.getClientePedido().getNombre()));
+}
+
+// 4. Collect
+public void crearColeccionesArticulos() {
+    List<Articulo> lista = articulos.values().stream()
+            .filter(a -> a.getIdArticulo().startsWith("2"))
+            .sorted(Comparator.comparing(Articulo::getPvp))
+            .toList();
+
+    Set<Articulo> conjunto = articulos.values().stream()
+            .filter(a -> a.getPvp() > 100)
+            .collect(Collectors.toSet());
+
+    Map<String, Articulo> mapa = articulos.values().stream()
+            .filter(a -> a.getExistencias() < 5)
+            .collect(Collectors.toMap(Articulo::getIdArticulo, a -> a));
+
+    System.out.println("Lista:");
+    lista.forEach(System.out::println);
+
+    System.out.println("Conjunto:");
+    conjunto.forEach(System.out::println);
+
+    System.out.println("Mapa:");
+    mapa.forEach((id, articulo) -> System.out.println(id + ": " + articulo));
+}
+  
+//</editor-fold>
+   
 
 }
